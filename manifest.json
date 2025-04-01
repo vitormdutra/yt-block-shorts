@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Shorts Blocker",
+    "version": "1.0",
+    "description": "Remove YouTube Shorts from the UI and redirects Shorts URLs.",
+    "permissions": ["scripting", "tabs", "webNavigation"],
+    "host_permissions": ["*://www.youtube.com/*"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://www.youtube.com/*"],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+      }
+    ],
+    "action": {
+      "default_title": "YouTube Shorts Blocker"
+    }
+  }
+  
