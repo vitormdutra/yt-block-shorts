@@ -37,8 +37,9 @@ A extensão estará ativa automaticamente.
 ## 📂 Estrutura do projeto
 
 ```
-youtube-shorts-blocker/
+yt-block-shorts/
 ├── manifest.json
+├── background.js
 └── content.js
 ```
 
