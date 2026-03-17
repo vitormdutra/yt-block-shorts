@@ -1,0 +1,64 @@
+/* 
+   -------------------------------------------------
+   yt-block-shorts - Static Sanitization (MV3)
+   -------------------------------------------------
+   This CSS is injected at document_start to 
+   provide a "flicker-free" distraction-free experience.
+   All rules use !important to override YouTube's 
+   dynamic inline styles.
+*/
+
+/* --- THEME HOOKS FOR ZEN MODE --- */
+:root {
+  --yt-block-shorts-hide: none;
+  --yt-block-shorts-faded: 0.5;
+}
+
+/* --- HIDE SHORTS EVERYWHERE (MVP) --- */
+ytd-reel-shelf-renderer,
+ytd-reel-item-renderer,
+a[href^="/shorts"], 
+ytd-mini-guide-entry-renderer[aria-label="Shorts"], 
+ytd-guide-entry-renderer:has(a[href^="/shorts"]), 
+tp-yt-paper-tab[title="Shorts"], 
+#endpoint[title="Shorts"] {
+  display: none !important;
+}
+
+/* --- BANNER AD MITIGATION --- */
+.ytp-ad-overlay-container,
+.ytp-ad-player-overlay-layout,
+.video-ads,
+.ytp-ad-module,
+#player-ads {
+  display: none !important;
+}
+
+/* --- UI DE-CLUTTER (ROOT REROUTE PREP) --- */
+/* Hide Home button to force Subscription feed mindset */
+#endpoint[title="Home"],
+a#endpoint[href="/"] {
+  display: none !important;
+}
+
+/* --- PRESERVE LAYOUT --- */
+/* Ensure the grid reflows correctly after items are hidden */
+ytd-rich-grid-renderer {
+  contain: content;
+}
+
+/* --- ZEN MODE: ABSOLUTE FOCUS --- */
+body.yt-block-shorts-zen #comments,
+body.yt-block-shorts-zen #secondary,
+body.yt-block-shorts-zen ytd-watch-next-secondary-results-renderer,
+body.yt-block-shorts-zen #chat,
+body.yt-block-shorts-zen #merchandise-shelf,
+body.yt-block-shorts-zen #ticket-shelf {
+  display: none !important;
+}
+
+/* Center the player when the sidebar is hidden in Zen Mode */
+body.yt-block-shorts-zen ytd-watch-flexy[flexy] #primary.ytd-watch-flexy {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
