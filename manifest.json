@@ -1,22 +1,56 @@
 {
-    "manifest_version": 3,
-    "name": "YouTube Shorts Blocker",
-    "version": "1.0",
-    "description": "Remove YouTube Shorts from the UI and redirects Shorts URLs.",
-    "permissions": ["scripting", "tabs", "webNavigation"],
-    "host_permissions": ["*://www.youtube.com/*"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
+  "manifest_version": 3,
+  "name": "YouTube Shorts Blocker (Surgical)",
+  "version": "1.1",
+  "description": "Premium, Distraction-Free YouTube: Blocks ads, redirects Shorts, and cleans the UI.",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "webNavigation",
+    "declarativeNetRequest",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
       {
-        "matches": ["*://www.youtube.com/*"],
-        "js": ["content.js"],
-        "run_at": "document_idle"
+        "id": "redirect_rules",
+        "enabled": true,
+        "path": "rules/redirect-rules.json"
       }
-    ],
-    "action": {
-      "default_title": "YouTube Shorts Blocker"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.youtube.com/*"
+      ],
+      "css": [
+        "styles/main.css"
+      ],
+      "js": [
+        "config/selectors.js",
+        "modules/ui-sanitizer.js",
+        "modules/ad-controller.js",
+        "modules/zen-mode.js",
+        "content.js"
+      ],
+      "run_at": "document_start"
     }
+  ],
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "action": {
+    "default_title": "YouTube Shorts Blocker",
+    "default_popup": "popup/popup.html"
   }
-  
+}
