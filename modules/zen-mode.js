@@ -10,16 +10,17 @@ const zenMode = {
    * Apply Zen Mode configurations
    */
   applyZenMode() {
-    chrome.storage.local.get(['zenModeEnabled'], (result) => {
-      // For MVP, we'll assume it's ENABLED if the user asked for it
-      const isEnabled = result.zenModeEnabled !== false; 
+    chrome.storage.local.get(['hideComments', 'hideRecommendations', 'hideMerch'], (result) => {
+      // Default to true if not set
+      const hideComments = result.hideComments !== false;
+      const hideRecommendations = result.hideRecommendations !== false;
+      const hideMerch = result.hideMerch !== false;
       
-      if (isEnabled) {
-        console.log("🧘 Zen Mode: Active. Suppressing engagement triggers.");
-        document.body.classList.add('yt-block-shorts-zen');
-      } else {
-        document.body.classList.remove('yt-block-shorts-zen');
-      }
+      console.log(`🧘 Zen Mode settings: Comments=${hideComments}, Recs=${hideRecommendations}, Merch=${hideMerch}`);
+      
+      document.body.classList.toggle('yt-block-shorts-hide-comments', hideComments);
+      document.body.classList.toggle('yt-block-shorts-hide-recommendations', hideRecommendations);
+      document.body.classList.toggle('yt-block-shorts-hide-merch', hideMerch);
     });
   },
 
@@ -29,9 +30,9 @@ const zenMode = {
   initialize() {
     this.applyZenMode();
 
-    // Listen for storage changes (for the future popup)
+    // Listen for storage changes
     chrome.storage.onChanged.addListener((changes) => {
-      if (changes.zenModeEnabled) {
+      if (changes.hideComments || changes.hideRecommendations || changes.hideMerch) {
         this.applyZenMode();
       }
     });

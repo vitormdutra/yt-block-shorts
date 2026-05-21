@@ -39,6 +39,7 @@
         "modules/ui-sanitizer.js",
         "modules/ad-controller.js",
         "modules/zen-mode.js",
+        "modules/keyboard-controller.js",
         "content.js"
       ],
       "run_at": "document_start"

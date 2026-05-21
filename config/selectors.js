@@ -26,6 +26,7 @@ window.SELECTORS = {
   AD_SKIP_BUTTON_CONTAINER: ".ytp-ad-skip-button-container",
   AD_SKIP_BUTTON: ".ytp-ad-skip-button",
   PLAYER_VIDEO: "video",
+  PLAYER_CONTAINER: "#movie_player",
   AD_SHOWING: ".ad-showing",
 
   // --- UI ELEMENTS (ZEN MODE READY) ---
