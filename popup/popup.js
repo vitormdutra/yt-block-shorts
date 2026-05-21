@@ -3,38 +3,67 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const zenToggle = document.getElementById('zenModeToggle');
+  const hideCommentsToggle = document.getElementById('hideCommentsToggle');
+  const hideRecommendationsToggle = document.getElementById('hideRecommendationsToggle');
+  const hideMerchToggle = document.getElementById('hideMerchToggle');
+  const adsCountEl = document.getElementById('adsCount');
+  const shortsCountEl = document.getElementById('shortsCount');
 
-  // Load existing preference
-  chrome.storage.local.get(['zenModeEnabled'], (result) => {
-    // Default to true if never set
-    zenToggle.checked = result.zenModeEnabled !== false;
+  // Load existing preferences and stats
+  chrome.storage.local.get([
+    'hideComments',
+    'hideRecommendations',
+    'hideMerch',
+    'adsMitigatedCount',
+    'shortsRedirectedCount'
+  ], (result) => {
+    // Default toggles to true if never set
+    hideCommentsToggle.checked = result.hideComments !== false;
+    hideRecommendationsToggle.checked = result.hideRecommendations !== false;
+    hideMerchToggle.checked = result.hideMerch !== false;
+
+    // Load stats counters (default to 0)
+    adsCountEl.textContent = (result.adsMitigatedCount || 0).toLocaleString();
+    shortsCountEl.textContent = (result.shortsRedirectedCount || 0).toLocaleString();
   });
 
-  // Handle toggle change
-  zenToggle.addEventListener('change', () => {
-    const isEnabled = zenToggle.checked;
-    
-    // Save to storage
-    chrome.storage.local.set({ zenModeEnabled: isEnabled }, () => {
-      console.log(`🧘 Zen Mode ${isEnabled ? 'enabled' : 'disabled'}`);
+  /**
+   * Helper to save a setting and push class updates to YouTube tabs
+   */
+  const updateSetting = (key, isChecked, className) => {
+    chrome.storage.local.set({ [key]: isChecked }, () => {
+      console.log(`🧘 Settings updated: ${key} = ${isChecked}`);
       
-      // Notify active tabs (optional, but good for instant feedback)
+      // Update active YouTube tabs instantly
       chrome.tabs.query({ url: '*://www.youtube.com/*' }, (tabs) => {
         tabs.forEach(tab => {
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            func: (enabled) => {
-              if (enabled) {
-                document.body.classList.add('yt-block-shorts-zen');
-              } else {
-                document.body.classList.remove('yt-block-shorts-zen');
+            func: (cls, force) => {
+              if (document.body) {
+                document.body.classList.toggle(cls, force);
               }
             },
-            args: [isEnabled]
+            args: [className, isChecked]
+          }).catch(err => {
+            // Ignore execution errors on restricted/unloaded tabs
+            console.warn(`Could not execute script on tab ${tab.id}:`, err);
           });
         });
       });
     });
+  };
+
+  // Attach change listeners
+  hideCommentsToggle.addEventListener('change', () => {
+    updateSetting('hideComments', hideCommentsToggle.checked, 'yt-block-shorts-hide-comments');
+  });
+
+  hideRecommendationsToggle.addEventListener('change', () => {
+    updateSetting('hideRecommendations', hideRecommendationsToggle.checked, 'yt-block-shorts-hide-recommendations');
+  });
+
+  hideMerchToggle.addEventListener('change', () => {
+    updateSetting('hideMerch', hideMerchToggle.checked, 'yt-block-shorts-hide-merch');
   });
 });

@@ -13,6 +13,16 @@ const adController = {
   originalPlaybackRate: 1,
 
   /**
+   * Increment the Ads mitigated counter in local storage
+   */
+  incrementAdsMitigated() {
+    chrome.storage.local.get(['adsMitigatedCount'], (result) => {
+      const current = result.adsMitigatedCount || 0;
+      chrome.storage.local.set({ adsMitigatedCount: current + 1 });
+    });
+  },
+
+  /**
    * Main ad mitigation logic
    */
   mitigateAds() {
@@ -31,6 +41,7 @@ const adController = {
           
           video.muted = true;
           video.playbackRate = 16;
+          this.incrementAdsMitigated();
         } else {
           // Continuous ad presence: Ensure it stays muted and fast
           if (!video.muted) video.muted = true;
@@ -61,6 +72,12 @@ const adController = {
           
           // Reset speed to normal (or whatever it was)
           video.playbackRate = this.originalPlaybackRate > 10 ? 1 : this.originalPlaybackRate;
+
+          // Focus the player container so keyboard controls work immediately
+          const playerContainer = document.querySelector(window.SELECTORS.PLAYER_CONTAINER || '#movie_player');
+          if (playerContainer) {
+            playerContainer.focus();
+          }
         }
       }
     }

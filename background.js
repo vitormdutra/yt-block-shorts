@@ -8,6 +8,16 @@
 const YOUTUBE_HOST = 'www.youtube.com';
 
 /**
+ * Increment the Shorts redirection counter in local storage
+ */
+function incrementShortsRedirected() {
+  chrome.storage.local.get(['shortsRedirectedCount'], (result) => {
+    const current = result.shortsRedirectedCount || 0;
+    chrome.storage.local.set({ shortsRedirectedCount: current + 1 });
+  });
+}
+
+/**
  * Handle internal SPA transitions via onUpdated
  */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -22,6 +32,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           if (videoId) {
             const redirectUrl = `https://${YOUTUBE_HOST}/watch?v=${videoId}`;
             console.log(`⏩ SPA Redirect: ${changeInfo.url} -> ${redirectUrl}`);
+            incrementShortsRedirected();
             chrome.tabs.update(tabId, { url: redirectUrl });
           }
         }
@@ -51,6 +62,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(
       const videoId = url.pathname.split('/')[2];
       if (videoId) {
         const redirectUrl = `https://${YOUTUBE_HOST}/watch?v=${videoId}`;
+        incrementShortsRedirected();
         chrome.tabs.update(details.tabId, { url: redirectUrl });
       }
     } catch (e) {}

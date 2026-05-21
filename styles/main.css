@@ -47,18 +47,33 @@ ytd-rich-grid-renderer {
   contain: content;
 }
 
-/* --- ZEN MODE: ABSOLUTE FOCUS --- */
-body.yt-block-shorts-zen #comments,
-body.yt-block-shorts-zen #secondary,
-body.yt-block-shorts-zen ytd-watch-next-secondary-results-renderer,
-body.yt-block-shorts-zen #chat,
-body.yt-block-shorts-zen #merchandise-shelf,
-body.yt-block-shorts-zen #ticket-shelf {
+/* --- GRANULAR ZEN MODE CONTROLS --- */
+
+/* Hide comments and chat */
+body.yt-block-shorts-hide-comments #comments,
+body.yt-block-shorts-hide-comments #chat {
   display: none !important;
 }
 
-/* Center the player when the sidebar is hidden in Zen Mode */
-body.yt-block-shorts-zen ytd-watch-flexy[flexy] #primary.ytd-watch-flexy {
+/* Hide related videos (sidebar) */
+body.yt-block-shorts-hide-recommendations #secondary,
+body.yt-block-shorts-hide-recommendations ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+/* Center the player when the sidebar is hidden */
+body.yt-block-shorts-hide-recommendations ytd-watch-flexy[flexy] #primary.ytd-watch-flexy {
   max-width: 100% !important;
   margin: 0 auto !important;
+}
+
+/* Hide horizontal scrollbar when sidebar is hidden to prevent overflow-x */
+body.yt-block-shorts-hide-recommendations {
+  overflow-x: hidden !important;
+}
+
+/* Hide merchandise and ticket shelves */
+body.yt-block-shorts-hide-merch #merchandise-shelf,
+body.yt-block-shorts-hide-merch #ticket-shelf {
+  display: none !important;
 }
