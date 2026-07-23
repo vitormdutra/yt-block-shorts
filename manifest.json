@@ -6,7 +6,6 @@
   "permissions": [
     "scripting",
     "tabs",
-    "webNavigation",
     "declarativeNetRequest",
     "storage"
   ],
@@ -39,8 +38,7 @@
         "modules/ui-sanitizer.js",
         "modules/ad-controller.js",
         "modules/zen-mode.js",
-        "modules/keyboard-controller.js",
-        "content.js"
+        "modules/keyboard-controller.js"
       ],
       "run_at": "document_start"
     }

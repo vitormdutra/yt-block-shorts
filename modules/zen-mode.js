@@ -40,8 +40,4 @@ const zenMode = {
 };
 
 // Start Zen Mode
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => zenMode.initialize());
-} else {
-  zenMode.initialize();
-}
+window.onReady(() => zenMode.initialize());

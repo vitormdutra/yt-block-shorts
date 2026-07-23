@@ -71,8 +71,4 @@ const keyboardController = {
 };
 
 // Start Keyboard Controller
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => keyboardController.initialize());
-} else {
-  keyboardController.initialize();
-}
+window.onReady(() => keyboardController.initialize());
