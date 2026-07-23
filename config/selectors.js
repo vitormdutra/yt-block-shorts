@@ -46,3 +46,55 @@ window.SELECTORS = {
   GRID_CONTAINER: "ytd-rich-grid-renderer",
   PAGE_MANAGER: "ytd-page-manager",
 };
+
+/**
+ * Run fn immediately if the DOM is already parsed, otherwise wait for it.
+ * Shared by every module to avoid repeating the readyState check.
+ */
+window.onReady = (fn) => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fn);
+  } else {
+    fn();
+  }
+};
+
+/**
+ * Coalesce rapid-fire calls (e.g. MutationObserver bursts) into one trailing call.
+ * Use for "settle and check final state" cases. Do NOT use this for streams that
+ * never go quiet (e.g. ad playback keeps mutating the DOM) - use throttle instead,
+ * or the call can be starved indefinitely.
+ */
+window.debounce = (fn, waitMs) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), waitMs);
+  };
+};
+
+/**
+ * Run fn at most once per waitMs, on both the leading and trailing edge, even
+ * under a continuous stream of calls. Use for checks that must keep happening
+ * periodically while mutations are ongoing (e.g. ad detection).
+ */
+window.throttle = (fn, waitMs) => {
+  let last = 0;
+  let timer = null;
+  return (...args) => {
+    const now = Date.now();
+    const remaining = waitMs - (now - last);
+    if (remaining <= 0) {
+      clearTimeout(timer);
+      timer = null;
+      last = now;
+      fn(...args);
+    } else if (!timer) {
+      timer = setTimeout(() => {
+        last = Date.now();
+        timer = null;
+        fn(...args);
+      }, remaining);
+    }
+  };
+};

@@ -97,7 +97,7 @@ const adController = {
     // Use a separate observer for the player manager to catch ad containers
     const playerManager = document.querySelector(window.SELECTORS.PAGE_MANAGER);
     if (playerManager) {
-      const adObserver = new MutationObserver(() => this.mitigateAds());
+      const adObserver = new MutationObserver(window.throttle(() => this.mitigateAds(), 50));
       adObserver.observe(playerManager, { childList: true, subtree: true });
     } else {
       // Body fallback for player loads
@@ -113,8 +113,4 @@ const adController = {
 };
 
 // Start mitigation
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => adController.initialize());
-} else {
-  adController.initialize();
-}
+window.onReady(() => adController.initialize());

@@ -34,7 +34,7 @@ const uiSanitizer = {
     const gridContainer = document.querySelector(window.SELECTORS.GRID_CONTAINER);
     if (gridContainer) {
       console.log("🔭 UI Observer: Targeting rich-grid-renderer");
-      const observer = new MutationObserver(() => this.removeShortsSections());
+      const observer = new MutationObserver(window.debounce(() => this.removeShortsSections(), 50));
       observer.observe(gridContainer, { childList: true, subtree: true });
     } else {
       // Fallback: search for grid when it appears
@@ -52,8 +52,4 @@ const uiSanitizer = {
 };
 
 // Start sanitizer
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => uiSanitizer.initialize());
-} else {
-  uiSanitizer.initialize();
-}
+window.onReady(() => uiSanitizer.initialize());
